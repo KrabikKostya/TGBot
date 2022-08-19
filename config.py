@@ -1,4 +1,4 @@
 import dotenv
 
 help(dotenv)
-# token = dotenv.get_variable(".env", "bot_token")
+token = dotenv.dotenv_values(".env")["bot_token"]
