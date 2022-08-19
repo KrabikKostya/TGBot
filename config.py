@@ -1,3 +1,3 @@
 import dotenv
 
-token = dotenv.__version__
+token = dotenv.get_variable(".env", "bot_token")
