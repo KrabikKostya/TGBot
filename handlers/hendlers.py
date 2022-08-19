@@ -31,7 +31,7 @@ async def process_callback_button(callback_query: CallbackQuery):
             can_send_other_messages=True
         ))
 
-    else:
+    if callback_query.data == "button2":
         await bot.send_message(callback_query.message.chat.id, f'Русня detected')
         await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
         await bot.kick_chat_member(chat_id=callback_query.message.chat.id, user_id=callback_query.from_user.id)
