@@ -59,7 +59,7 @@ async def cmd_mute(msg: Message):
         await msg.reply("Команда має бути відповіддю на повідомлення")
         return
     mute_time = 1
-    print(msg["text"].split()[1])
+    print(msg["text"].split()[1] == "1")
     try:
         if msg["text"].split()[2] == "h":
             mute_time = float(msg["text"].split()[1]) * 3600
