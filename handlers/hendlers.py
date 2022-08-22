@@ -58,7 +58,21 @@ async def cmd_mute(msg: Message):
     if not msg.reply_to_message:
         await msg.reply("Команда має бути відповіддю на повідомлення")
         return
-    mute_time = float(msg.split()[1]) * 60
+    if msg.split()[2] == "h":
+        mute_time = float(msg.split()[1]) * 3600
+    elif msg.split()[2] == "d":
+        mute_time = float(msg.split()[1]) * 3600 * 24
+    elif msg.split()[2] == "w":
+        mute_time = float(msg.split()[1]) * 3600 * 24 * 7
+    elif msg.split()[2] == "m":
+        mute_time = float(msg.split()[1]) * 3600 * 24 * 30
+    elif msg.split()[2] == "y":
+        mute_time = float(msg.split()[1]) * 3600 * 24 * 365
     await msg.bot.delete_message(config.group_id, msg.message_id)
     await msg.bot.restrict_chat_member(config.group_id, msg.reply_to_message.from_user.id, until_date=time.time() + mute_time)
     await msg.reply_to_message.reply("Посиди і подумай над своєю поведінкою")
+
+
+@dp.message_handler(commands=["help"], commands_prefix="!/")
+async def cmd_help(msg: Message):
+    await msg.reply_to_message.reply("Доступі команди: \n !ban - команда ЛИШЕ для адмінів, якщо прописати її у відповідь на повідомлення бот забанить того, на чиє повідомлення була відповіь \n !mute [number] [h/d/w/m/y](optional) - команда ЛИШЕ для адмінів, якщо після команди вказати число, то бот замутить людину на вказану кількість хвилин, якщо після числа вказати перечислені аргументи, то бот замутить людину на вказану кількість годин, днів, тижнів, місяців, років відповідно \n !help - команда для надання справочної інформації по усім командам бота")
