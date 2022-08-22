@@ -1,5 +1,5 @@
 import time
-import cofig
+import config
 from dispetcher import bot, dp
 from aiogram.types.chat_permissions import ChatPermissions
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
