@@ -1,6 +1,5 @@
-import prod_config
+import os
 
 
-prod_config.prod_configurator()
-bot_owner = 0
-bot_token = ""
+config.bot_owner = int(os.environ.get('bot_owner', None))
+config.bot_token = os.environ.get('bot_token', None)
