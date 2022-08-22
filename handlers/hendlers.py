@@ -1,10 +1,12 @@
 import time
 import config
+from filters import IsAdminFilter
 from dispetcher import bot, dp
 from aiogram.types.chat_permissions import ChatPermissions
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
 
 
+dp.filters_factory.bind(IsAdminFilter)
 inline_btn_1 = InlineKeyboardButton('Звичайно Український', callback_data='button1')
 inline_btn_2 = InlineKeyboardButton('російський', callback_data='button2')
 inline_kb = InlineKeyboardMarkup(row_width=2).add(inline_btn_1, inline_btn_2)
@@ -46,8 +48,8 @@ async def cmd_ban(msg: Message):
     if not msg.reply_to_message:
         await msg.reply("Команда має бути відповіддю на повідомлення")
         return
-    await msg.bot.delete_message(cofig.group_id, msg.message_id)
-    await msg.bot.kick_chat_member(cofig.group_id, msg.reply_to_message.from_user.id)
+    await msg.bot.delete_message(config.group_id, msg.message_id)
+    await msg.bot.kick_chat_member(config.group_id, msg.reply_to_message.from_user.id)
     await msg.reply_to_message.reply("Нема тіла, нема діла, юсер блокнутий")
 
 
@@ -57,6 +59,6 @@ async def cmd_mute(msg: Message):
         await msg.reply("Команда має бути відповіддю на повідомлення")
         return
     mute_time = float(msg.split()[1]) * 60
-    await msg.bot.delete_message(cofig.group_id, msg.message_id)
-    await msg.bot.restrict_chat_member(cofig.group_id, msg.reply_to_message.from_user.id, until_date=time.time() + mute_time)
+    await msg.bot.delete_message(config.group_id, msg.message_id)
+    await msg.bot.restrict_chat_member(config.group_id, msg.reply_to_message.from_user.id, until_date=time.time() + mute_time)
     await msg.reply_to_message.reply("Посиди і подумай над своєю поведінкою")
