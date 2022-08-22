@@ -1,4 +1,5 @@
 import time
+import cofig
 from dispetcher import bot, dp
 from aiogram.types.chat_permissions import ChatPermissions
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message
@@ -38,3 +39,24 @@ async def process_callback_button(callback_query: CallbackQuery):
         await bot.send_message(callback_query.message.chat.id, f'Русня detected')
         await bot.delete_message(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id)
         await bot.kick_chat_member(chat_id=callback_query.message.chat.id, user_id=callback_query.from_user.id)
+
+
+@dp.message_handler(is_admin=True, commands=["ban"], commands_prefix="!/")
+async def cmd_ban(msg: Message):
+    if not msg.reply_to_message:
+        await msg.reply("Команда має бути відповіддю на повідомлення")
+        return
+    await msg.bot.delete_message(cofig.group_id, msg.message_id)
+    await msg.bot.kick_chat_member(cofig.group_id, msg.reply_to_message.from_user.id)
+    await msg.reply_to_message.reply("Нема тіла, нема діла, юсер блокнутий")
+
+
+@dp.message_handler(is_admin=True, commands=["mute"], commands_prefix="!/")
+async def cmd_mute(msg: Message):
+    if not msg.reply_to_message:
+        await msg.reply("Команда має бути відповіддю на повідомлення")
+        return
+    mute_time = float(msg.split()[1]) * 60
+    await msg.bot.delete_message(cofig.group_id, msg.message_id)
+    await msg.bot.restrict_chat_member(cofig.group_id, msg.reply_to_message.from_user.id, until_date=time.time() + mute_time)
+    await msg.reply_to_message.reply("Посиди і подумай над своєю поведінкою")
