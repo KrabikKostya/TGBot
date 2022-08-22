@@ -46,12 +46,17 @@ async def process_callback_button(callback_query: CallbackQuery):
 
 @dp.message_handler(is_admin=True, commands=["ban"], commands_prefix="!/")
 async def cmd_ban(msg: Message):
-    if not msg.reply_to_message:
-        await msg.reply("Команда має бути відповіддю на повідомлення")
-        return
-    await msg.bot.delete_message(config.group_id, msg.message_id)
-    await msg.bot.kick_chat_member(config.group_id, msg.reply_to_message.from_user.id)
-    await msg.reply_to_message.reply("Нема тіла, нема діла, юсер блокнутий")
+    try:
+        if not msg.reply_to_message:
+            await msg.reply("Команда має бути відповіддю на повідомлення")
+            return
+        await msg.bot.delete_message(config.group_id, msg.message_id)
+        await msg.bot.kick_chat_member(config.group_id, msg.reply_to_message.from_user.id)
+        await msg.reply_to_message.reply("Нема тіла, нема діла, юсер блокнутий")
+    except CantRestrictSelf:
+        await msg.reply("Я краще свого господаря і знаю, що не можу сам себе забанити")
+    except CantRestrictChatOwner:
+        await msg.reply("Стенд можна перемогти лише стендом, але навіть адміни безсилі проти творця цього чату")
 
 
 @dp.message_handler(is_admin=True, commands=["mute"], commands_prefix="!/")
@@ -79,9 +84,9 @@ async def cmd_mute(msg: Message):
         await msg.bot.restrict_chat_member(config.group_id, msg.reply_to_message.from_user.id, until_date=time.time() + mute_time)
         await msg.reply_to_message.reply("Посиди і подумай над своєю поведінкою")
     except CantRestrictSelf:
-        msg.reply("Я краще свого господаря і знаю, що не можу сам себе забанити")
+        await msg.reply("Я краще свого господаря і знаю, що не можу сам себе забанити")
     except CantRestrictChatOwner:
-        msg.reply("Стенд можна перемогти лише стендом, але навіть адміни безсилі проти творця цього чату")
+        await msg.reply("Стенд можна перемогти лише стендом, але навіть адміни безсилі проти творця цього чату")
 
 
 
