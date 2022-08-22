@@ -50,9 +50,9 @@ async def cmd_ban(msg: Message):
         if not msg.reply_to_message:
             await msg.reply("Команда має бути відповіддю на повідомлення")
             return
-        await msg.bot.delete_message(config.group_id, msg.message_id)
         await msg.bot.kick_chat_member(config.group_id, msg.reply_to_message.from_user.id)
         await msg.reply_to_message.reply("Нема тіла, нема діла, юсер блокнутий")
+        await msg.bot.delete_message(config.group_id, msg.message_id)
     except CantRestrictSelf:
         await msg.reply("Я краще свого господаря і знаю, що не можу сам себе забанити")
     except CantRestrictChatOwner:
@@ -80,9 +80,9 @@ async def cmd_mute(msg: Message):
                 mute_time = float(msg["text"].split()[1]) * 3600 * 24 * 365
         except IndexError:
             mute_time = float(msg["text"].split()[1]) * 60
-        await msg.bot.delete_message(config.group_id, msg.message_id)
         await msg.bot.restrict_chat_member(config.group_id, msg.reply_to_message.from_user.id, until_date=time.time() + mute_time)
         await msg.reply_to_message.reply("Посиди і подумай над своєю поведінкою")
+        await msg.bot.delete_message(config.group_id, msg.message_id)
     except CantRestrictSelf:
         await msg.reply("Я краще свого господаря і знаю, що не можу сам себе забанити")
     except CantRestrictChatOwner:
