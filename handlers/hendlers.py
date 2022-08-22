@@ -58,16 +58,19 @@ async def cmd_mute(msg: Message):
     if not msg.reply_to_message:
         await msg.reply("Команда має бути відповіддю на повідомлення")
         return
-    if msg.split()[2] == "h":
-        mute_time = float(msg.split()[1]) * 3600
-    elif msg.split()[2] == "d":
-        mute_time = float(msg.split()[1]) * 3600 * 24
-    elif msg.split()[2] == "w":
-        mute_time = float(msg.split()[1]) * 3600 * 24 * 7
-    elif msg.split()[2] == "m":
-        mute_time = float(msg.split()[1]) * 3600 * 24 * 30
-    elif msg.split()[2] == "y":
-        mute_time = float(msg.split()[1]) * 3600 * 24 * 365
+    try:
+        if str(msg).split()[2] == "h":
+            mute_time = float(msg.split()[1]) * 3600
+        elif str(msg).split()[2] == "d":
+            mute_time = float(msg.split()[1]) * 3600 * 24
+        elif str(msg).split()[2] == "w":
+            mute_time = float(msg.split()[1]) * 3600 * 24 * 7
+        elif str(msg).split()[2] == "m":
+            mute_time = float(msg.split()[1]) * 3600 * 24 * 30
+        elif str(msg).split()[2] == "y":
+            mute_time = float(msg.split()[1]) * 3600 * 24 * 365
+    except IndexError:
+        mute_time = float(msg.split()[1]) * 60
     await msg.bot.delete_message(config.group_id, msg.message_id)
     await msg.bot.restrict_chat_member(config.group_id, msg.reply_to_message.from_user.id, until_date=time.time() + mute_time)
     await msg.reply_to_message.reply("Посиди і подумай над своєю поведінкою")
