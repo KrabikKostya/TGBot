@@ -161,7 +161,8 @@ async def cmd_add(msg: Message):
 async def cmd_all(msg: Message):
     session = Session(bind=engine)
     users = session.query(Users).all()
+    print(users)
     text = ""
-    for i in range(len(users)):
-        text += cryptocode.decrypt(list(users)[i].tg_username, list(users)[i].kay_name)
+    for i in range(len(list(users))):
+        text += str(cryptocode.decrypt(list(users)[i].tg_username, list(users)[i].kay_name))
     await msg.reply(text)
