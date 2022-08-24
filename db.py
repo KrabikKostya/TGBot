@@ -20,5 +20,4 @@ class Users(base):
 
 
 engine.connect()
-base.metadata.drop_all(engine)
 base.metadata.create_all(engine)
