@@ -155,3 +155,13 @@ async def cmd_add(msg: Message):
         session.commit()
         await msg.reply("Тебе додано до бази 🍉")
         return
+
+
+@dp.message_handler(commands=["all"], commands_prefix="!/")
+async def cmd_all(msg: Message):
+    session = Session(bind=engine)
+    users = session.query(Users).all()
+    text = ""
+    for i in range(len(users)):
+        text += cryptocode.decrypt(list(users)[i].tg_username, list(users)[i].kay_name)
+    await msg.reply(text)
