@@ -105,7 +105,7 @@ async def cmd_unmute(msg: Message):
 
 @dp.message_handler(commands=["help"], commands_prefix="!/")
 async def cmd_help(msg: Message):
-    file = open("../help_text.txt")
+    file = open("help_text.txt")
     await msg.reply(str(file))
     file.close()
 
