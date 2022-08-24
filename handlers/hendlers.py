@@ -153,9 +153,8 @@ async def cmd_add(msg: Message):
 @dp.message_handler(commands=["all"], commands_prefix="!/")
 async def cmd_all(msg: Message):
     session = Session(bind=engine)
-    users = session.query(Users).all()
-    print(list(users))
+    users = session.query(Users.kay_name, Users.tg_username).all()
     text = ""
-    for i in range(len(list(users))):
-        text += "@" + str(cryptocode.decrypt(list(users)[i].tg_username, list(users)[i].kay_name)) + ""
+    for i in range(len(list(session.query(Users).all()))):
+        text += "@" + cryptocode.decryp(users[i][1], users[i][0]) + ", "
     await msg.reply(text)
