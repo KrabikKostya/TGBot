@@ -42,7 +42,7 @@ async def process_callback_button(callback_query: CallbackQuery):
             can_send_other_messages=True
         ))
         session = Session(bind=engine)
-        key = random.randint(0, 1000000)
+        key = random.randint(0, 1000_000)
         tg_id = int(callback_query.message.from_user.id) ^ key
         tg_username = cryptocode.encrypt(str(callback_query.message.from_user.username), bin(key))
         session.add(Users(tg_id=tg_id, tg_username=tg_username, kay_id=key, kay_name=bin(key)))
@@ -131,10 +131,11 @@ async def cmd_meow(msg: Message):
 async def cmd_add(msg: Message):
     session = Session(bind=engine)
     if msg.reply_to_message:
-        if session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id)).all():
+        print(session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id) ^ Users.kay).all())
+        if session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id) ^ Users.kay).all():
             await msg.reply(f"Цей юзер вже є в базі 🍉")
             return
-        key = random.randint(0, 1000000)
+        key = random.randint(0, 1000_000)
         tg_id = int(msg.from_user.id) ^ key
         tg_username = cryptocode.encrypt(str(msg.from_user.username), bin(key))
         session.add(Users(tg_id=tg_id, tg_username=tg_username, kay_id=key, kay_name=bin(key)))
@@ -144,7 +145,7 @@ async def cmd_add(msg: Message):
     if session.query(Users).filter(Users.tg_id == int(msg.from_user.id)).all():
         await msg.reply(f"Ти вже є в базі 🍉")
         return
-    key = random.randint(0, 1000000)
+    key = random.randint(0, 1000_000)
     tg_id = int(msg.from_user.id) ^ key
     tg_username = cryptocode.encrypt(str(msg.from_user.username), bin(key))
     session.add(Users(tg_id=tg_id, tg_username=tg_username, kay_id=key, kay_name=bin(key)))
