@@ -1,5 +1,7 @@
 import time
 import config
+from db import engine, Users
+from sqlalchemy.orm import Session
 from filters import IsAdminFilter
 from dispetcher import bot, dp
 from aiogram.types.chat_permissions import ChatPermissions
@@ -66,7 +68,6 @@ async def cmd_mute(msg: Message):
             await msg.reply("Команда має бути відповіддю на повідомлення")
             return
         mute_time = 1
-        print(msg["text"].split()[1] == "1")
         try:
             if msg["text"].split()[2] == "h":
                 mute_time = float(msg["text"].split()[1]) * 3600
@@ -89,7 +90,43 @@ async def cmd_mute(msg: Message):
         await msg.reply("Стенд можна перемогти лише стендом, але навіть адміни безсилі проти творця цього чату")
 
 
+@dp.message_handler(is_admin=True, commands=["unmute"], commands_prefix="!/")
+async def cmd_unmute(msg: Message):
+    if not msg.reply_to_message:
+        await msg.reply("Команда має бути відповіддю на повідомлення")
+        return
+    await bot.restrict_chat_member(msg.chat.id, msg.from_user.id, ChatPermissions(
+        can_send_messages=True,
+        can_send_media_messages=True,
+        can_add_web_page_previews=True,
+        can_send_other_messages=True
+    ))
+
 
 @dp.message_handler(commands=["help"], commands_prefix="!/")
 async def cmd_help(msg: Message):
-    await msg.reply("Доступі команди: \n !ban - команда ЛИШЕ для адмінів, якщо прописати її у відповідь на повідомлення бот забанить того, на чиє повідомлення була відповіь \n !mute [number] [h/d/w/m/y](optional) - команда ЛИШЕ для адмінів, якщо після команди вказати число, то бот замутить людину на вказану кількість хвилин, якщо після числа вказати перечислені аргументи, то бот замутить людину на вказану кількість годин, днів, тижнів, місяців, років відповідно \n !help - команда для надання справочної інформації по усім командам бота")
+    file = open("../help_text.txt")
+    await msg.reply(str(file))
+    file.close()
+
+
+@dp.message_handler(commands=["meow"], commands_prefix="!/")
+async def cmd_meow(msg: Message):
+    if msg.from_user.id != config.bot_owner:
+        await msg.reply("Ця команда лише для пана Діо (Крабіка)")
+        return
+    await msg.reply("Пане Крабік, я себе гарно вів, сподіваюсь ви задоволені )))")
+
+
+@dp.message_handler(commands=["add"], commands_prefix="!/")
+async def cmd_add(msg: Message):
+    session = Session(bind=engine)
+    if session.query(Users).filter(Users.tg_id == msg.from_user.id).all():
+        await msg.reply(f"Ти вже є в базі")
+        return
+    if not msg.reply_to_message:
+        session.add(Users(tg_id=msg.from_user.id, tg_username=msg.from_user.username))
+        session.commit()
+        await msg.reply("Тебе додано до бази")
+        return
+
