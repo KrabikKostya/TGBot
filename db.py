@@ -10,7 +10,6 @@ class Users(base):
     __tablename__ = 'users'
     id = Column(Integer(), primary_key=True)
     tg_id = Column(Integer(), nullable=False)
-    kay_id = Column(Integer(), nullable=False)
     kay_name = Column(String(), nullable=False)
     tg_username = Column(String(), nullable=False)
     neck_size = Column(Integer(), nullable=False, default=0)
