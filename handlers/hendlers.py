@@ -1,5 +1,6 @@
 import time
 import config
+import os
 from db import engine, Users
 from sqlalchemy.orm import Session
 from filters import IsAdminFilter
@@ -105,7 +106,7 @@ async def cmd_unmute(msg: Message):
 
 @dp.message_handler(commands=["help"], commands_prefix="!/")
 async def cmd_help(msg: Message):
-    file = open("help.txt")
+    file = open(os.path.abspath("./help.txt"))
     await msg.reply(str(file.read()))
     file.close()
 
