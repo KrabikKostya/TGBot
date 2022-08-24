@@ -14,10 +14,7 @@ inline_btn_1 = InlineKeyboardButton('Звичайно Український', c
 inline_btn_2 = InlineKeyboardButton('російський', callback_data='button2')
 inline_kb = InlineKeyboardMarkup(row_width=2).add(inline_btn_1, inline_btn_2)
 user_id: int = 0
-session = Session(bind=engine)
-if list(session.query(Users).all()) is []:
-    session.add(Users(tg_id=config.bot_owner, tg_username="krabik_krabikovich"))
-    session.commit()
+
 
 @dp.message_handler(content_types=["new_chat_members"])
 async def on_user_joined(message: Message):

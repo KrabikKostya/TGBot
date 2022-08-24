@@ -15,3 +15,7 @@ class Users(base):
     is_alive = Column(Boolean(), nullable=False, default=True)
     cooldawn_neck = Column(DateTime(), default=datetime.now)
     cooldawn_roulette = Column(DateTime(), default=datetime.now)
+
+
+engine.connect()
+base.metadata.create_all(engine)
