@@ -121,12 +121,19 @@ async def cmd_meow(msg: Message):
 @dp.message_handler(commands=["add"], commands_prefix="!/")
 async def cmd_add(msg: Message):
     session = Session(bind=engine)
+    if msg.reply_to_message:
+        if session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id)).all():
+            await msg.reply(f"Цей юзер вже є в базі")
+            return
+        session.add(Users(tg_id=msg.from_user.id, tg_username=msg.from_user.username))
+        session.commit()
+        await msg.reply(f"Юзера @{msg.reply_to_message.from_user.username} додано до бази даних")
+        return
     if session.query(Users).filter(Users.tg_id == int(msg.from_user.id)).all():
         await msg.reply(f"Ти вже є в базі")
         return
-    if not msg.reply_to_message:
-        session.add(Users(tg_id=msg.from_user.id, tg_username=msg.from_user.username))
-        session.commit()
-        await msg.reply("Тебе додано до бази")
-        return
+    session.add(Users(tg_id=msg.from_user.id, tg_username=msg.from_user.username))
+    session.commit()
+    await msg.reply("Тебе додано до бази")
+    return
 
