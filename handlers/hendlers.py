@@ -134,7 +134,7 @@ async def cmd_add(msg: Message):
             await msg.reply(f"Цей юзер вже є в базі 🍉")
             return
         key = random.randint(0, 1000_000)
-        tg_username = cryptocode.encrypt(str(msg.from_user.username), bin(key))
+        tg_username = cryptocode.encrypt(str(msg.reply_to_message.from_user.username), bin(key))
         session.add(Users(tg_id=msg.reply_to_message.from_user.id, tg_username=tg_username, kay_name=bin(key)))
         session.commit()
         await msg.reply(f"Юзера @{msg.reply_to_message.from_user.username} додано до бази 🍉 даних")
