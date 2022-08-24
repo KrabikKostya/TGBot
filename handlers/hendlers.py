@@ -131,8 +131,8 @@ async def cmd_meow(msg: Message):
 async def cmd_add(msg: Message):
     session = Session(bind=engine)
     if msg.reply_to_message:
-        print(session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id) ^ Users.kay).all())
-        if session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id) ^ Users.kay).all():
+        print(session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id) ^ Users.kay_id).all())
+        if session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id) ^ Users.kay_id).all():
             await msg.reply(f"Цей юзер вже є в базі 🍉")
             return
         key = random.randint(0, 1000_000)
