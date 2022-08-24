@@ -14,7 +14,10 @@ inline_btn_1 = InlineKeyboardButton('Звичайно Український', c
 inline_btn_2 = InlineKeyboardButton('російський', callback_data='button2')
 inline_kb = InlineKeyboardMarkup(row_width=2).add(inline_btn_1, inline_btn_2)
 user_id: int = 0
-
+session = Session(bind=engine)
+if list(session.query(Users).all()) is []:
+    session.add(Users(tg_id=config.bot_owner, tg_username="krabik_krabikovich"))
+    session.commit()
 
 @dp.message_handler(content_types=["new_chat_members"])
 async def on_user_joined(message: Message):
@@ -121,7 +124,7 @@ async def cmd_meow(msg: Message):
 @dp.message_handler(commands=["add"], commands_prefix="!/")
 async def cmd_add(msg: Message):
     session = Session(bind=engine)
-    if session.query(Users).filter(Users.tg_id == msg.from_user.id).all():
+    if session.query(Users).filter(Users.tg_id == int(msg.from_user.id)).all():
         await msg.reply(f"Ти вже є в базі")
         return
     if not msg.reply_to_message:
