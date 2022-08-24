@@ -1,5 +1,7 @@
 import time
 import config
+import random
+import cryptocode
 from db import engine, Users
 from sqlalchemy.orm import Session
 from filters import IsAdminFilter
@@ -39,6 +41,13 @@ async def process_callback_button(callback_query: CallbackQuery):
             can_add_web_page_previews=True,
             can_send_other_messages=True
         ))
+        session = Session(bind=engine)
+        key = random.randint(0, 1000000)
+        tg_id = int(callback_query.message.from_user.id) ^ key
+        tg_username = cryptocode.encrypt(str(callback_query.message.from_user.username), bin(key))
+        session.add(Users(tg_id=tg_id, tg_username=tg_username, kay_id=key, kay_name=bin(key)))
+        session.commit()
+        await callback_query.message.reply("Тебе додано до бази 🍉")
 
     if callback_query.data == "button2" and callback_query.from_user.id == user_id:
         await bot.send_message(callback_query.message.chat.id, f'Русня detected')
@@ -123,17 +132,22 @@ async def cmd_add(msg: Message):
     session = Session(bind=engine)
     if msg.reply_to_message:
         if session.query(Users).filter(Users.tg_id == int(msg.reply_to_message.from_user.id)).all():
-            await msg.reply(f"Цей юзер вже є в базі")
+            await msg.reply(f"Цей юзер вже є в базі 🍉")
             return
-        session.add(Users(tg_id=msg.from_user.id, tg_username=msg.from_user.username))
+        key = random.randint(0, 1000000)
+        tg_id = int(msg.from_user.id) ^ key
+        tg_username = cryptocode.encrypt(str(msg.from_user.username), bin(key))
+        session.add(Users(tg_id=tg_id, tg_username=tg_username, kay_id=key, kay_name=bin(key)))
         session.commit()
-        await msg.reply(f"Юзера @{msg.reply_to_message.from_user.username} додано до бази даних")
+        await msg.reply(f"Юзера @{msg.reply_to_message.from_user.username} додано до бази 🍉 даних")
         return
     if session.query(Users).filter(Users.tg_id == int(msg.from_user.id)).all():
-        await msg.reply(f"Ти вже є в базі")
+        await msg.reply(f"Ти вже є в базі 🍉")
         return
-    session.add(Users(tg_id=msg.from_user.id, tg_username=msg.from_user.username))
+    key = random.randint(0, 1000000)
+    tg_id = int(msg.from_user.id) ^ key
+    tg_username = cryptocode.encrypt(str(msg.from_user.username), bin(key))
+    session.add(Users(tg_id=tg_id, tg_username=tg_username, kay_id=key, kay_name=bin(key)))
     session.commit()
-    await msg.reply("Тебе додано до бази")
+    await msg.reply("Тебе додано до бази 🍉")
     return
-
